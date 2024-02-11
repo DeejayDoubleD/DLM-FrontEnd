@@ -14,6 +14,7 @@
 
 <script>
 import router from '@/router';
+import { useUserStore } from '@/stores/user';
 import axios from 'axios';
 
 export default {
@@ -24,12 +25,14 @@ export default {
   },
   methods: {
     async login() {
+      const userStore = useUserStore(this.$pinia)
       try {
         const response = await axios.post('http://127.0.0.1:8080/auth/login', {
             username: this.username,
             password: this.password
         });
         console.log('Login successful');
+        userStore.setUserData(this.username, this.password, response.data['jwtToken'])
         router.push('/home')
       } catch (error) {
         this.error = error.response.data['message']
